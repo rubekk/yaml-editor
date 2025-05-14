@@ -82,12 +82,6 @@ const YamlEditor: React.FC = () => {
 
     const [config, setConfig] = useState<ConfigItemType[]>([]);
     const [activeTab, setActiveTab] = useState<TabType>('split');
-    // const [selection, setSelection] = useState<SelectionType>({
-    //     itemIndex: null,
-    //     childIndex: null,
-    //     actionIndex: null,
-    //     resourceIndex: null
-    // });
     const [error, setError] = useState<string | null>(null);
     const [fullscreenMode, setFullscreenMode] = useState<FullscreenModeType>('none');
     // Flag to prevent circular updates
@@ -108,7 +102,7 @@ const YamlEditor: React.FC = () => {
             console.error("Error parsing YAML:", e);
             setError(`Error parsing YAML: ${e instanceof Error ? e.message : String(e)}`);
         }
-    }, [yamlText]);
+    }, [yamlText, yamlFromUi]);
 
     // Update YAML text when config changes but only in UI mode
     useEffect(() => {
@@ -125,6 +119,7 @@ const YamlEditor: React.FC = () => {
     }, [config, activeTab]);
 
     // CRUD operations
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateItem = (itemIndex: number, field: keyof ConfigItemType, value: any) => {
         setConfig(prev => {
             const newConfig = [...prev];
@@ -136,6 +131,7 @@ const YamlEditor: React.FC = () => {
         });
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateChild = (itemIndex: number, childIndex: number, field: keyof import('../lib/types').ChildType, value: any) => {
         setConfig(prev => {
             const newConfig = [...prev];
@@ -152,6 +148,7 @@ const YamlEditor: React.FC = () => {
         childIndex: number | null,
         actionIndex: number,
         field: keyof import('../lib/types').ActionType,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         value: any
     ) => {
         setConfig(prev => {
@@ -177,6 +174,7 @@ const YamlEditor: React.FC = () => {
         actionIndex: number,
         resourceIndex: number,
         field: keyof import('../lib/types').ResourceType,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         value: any
     ) => {
         setConfig(prev => {
@@ -226,6 +224,8 @@ const YamlEditor: React.FC = () => {
             } else {
                 newConfig[itemIndex].actions.push(defaultAction());
             }
+
+            console.log(prev)
             return newConfig;
         });
     };
@@ -234,8 +234,38 @@ const YamlEditor: React.FC = () => {
         setConfig(prev => {
             const newConfig = [...prev];
             if (childIndex !== null) {
+                // Make sure actions array exists
+                if (!newConfig[itemIndex].children[childIndex].actions) {
+                    newConfig[itemIndex].children[childIndex].actions = [];
+                }
+
+                // Make sure the specific action exists
+                if (!newConfig[itemIndex].children[childIndex].actions[actionIndex]) {
+                    newConfig[itemIndex].children[childIndex].actions[actionIndex] = defaultAction();
+                }
+
+                // Initialize resources array if it doesn't exist
+                if (!newConfig[itemIndex].children[childIndex].actions[actionIndex].resources) {
+                    newConfig[itemIndex].children[childIndex].actions[actionIndex].resources = [];
+                }
+
                 newConfig[itemIndex].children[childIndex].actions[actionIndex].resources.push(defaultResource());
             } else {
+                // Make sure actions array exists
+                if (!newConfig[itemIndex].actions) {
+                    newConfig[itemIndex].actions = [];
+                }
+
+                // Make sure the specific action exists
+                if (!newConfig[itemIndex].actions[actionIndex]) {
+                    newConfig[itemIndex].actions[actionIndex] = defaultAction();
+                }
+
+                // Initialize resources array if it doesn't exist
+                if (!newConfig[itemIndex].actions[actionIndex].resources) {
+                    newConfig[itemIndex].actions[actionIndex].resources = [];
+                }
+
                 newConfig[itemIndex].actions[actionIndex].resources.push(defaultResource());
             }
             return newConfig;

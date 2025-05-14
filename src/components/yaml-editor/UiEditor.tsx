@@ -9,9 +9,11 @@ interface UIEditorProps {
     fullscreenMode: FullscreenModeType;
     toggleFullscreen: (mode: 'text' | 'ui') => void;
     addItem: () => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updateItem: (itemIndex: number, field: keyof ConfigItemType, value: any) => void;
     deleteItem: (itemIndex: number) => void;
     addChild: (itemIndex: number) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updateChild: (itemIndex: number, childIndex: number, field: keyof import('../../lib/types').ChildType, value: any) => void;
     deleteChild: (itemIndex: number, childIndex: number) => void;
     addAction: (itemIndex: number, childIndex: number | null) => void;
@@ -20,6 +22,7 @@ interface UIEditorProps {
         childIndex: number | null,
         actionIndex: number,
         field: keyof import('../../lib/types').ActionType,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         value: any
     ) => void;
     deleteAction: (itemIndex: number, childIndex: number | null, actionIndex: number) => void;
@@ -30,6 +33,7 @@ interface UIEditorProps {
         actionIndex: number,
         resourceIndex: number,
         field: keyof import('../../lib/types').ResourceType,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         value: any
     ) => void;
     deleteResource: (
